@@ -1,0 +1,32 @@
+cache:
+  directories:
+    - $HOME/.cache/coursier
+    - $HOME/.ivy2/cache
+    - $HOME/.sbt
+
+before_cache:
+  - rm -fv $HOME/.ivy2/.sbt.ivy.lock
+  - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
+  - find $HOME/.sbt        -name "*.lock"               -print -delete
+
+language: scala
+
+os:
+  - linux
+  - osx
+
+jdk:
+  - openjdk11
+  - openjdk13
+  - openjdk-ea
+
+
+scala:
+  - 2.12.10
+
+jobs:
+  allow_failures:
+    - jdk: openjdk-ea
+
+script:
+  - sbt scalastyle && sbt test
