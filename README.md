@@ -2,7 +2,7 @@
 A Scala library for online multiplayer games
 
 ## Travis build status (deploy)
-[![Build Status](https://travis-ci.com/StefanoSalvatori/PPS-18-scala-omg.svg?branch=deploy)](https://travis-ci.com/StefanoSalvatori/PPS-18-scala-omg)
+[![Build Status](https://travis-ci.com/StefanoSalvatori/scalaomg-core.svg?branch=deploy)](https://travis-ci.com/StefanoSalvatori/scalaomg-core)
 
 ## Description
 
