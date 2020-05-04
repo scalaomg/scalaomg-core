@@ -118,7 +118,7 @@ object FilterOptions {
   /**
    * It creates a [[FilterOptions]] containing just the given filter.
    * @param filter the filter to create
-   * @return [[FilterOptions]] containing the gven filter
+   * @return [[FilterOptions]] containing the given filter
    */
   def just(filter: FilterOption): FilterOptions = FilterOptions(Set(filter))
 

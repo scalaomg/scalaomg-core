@@ -158,10 +158,10 @@ trait ServerRoom extends BasicRoom
    * @return The value of the property, expressed as [[scalaomg.common.room.RoomPropertyValue]]
    */
   def `valueOf~AsPropertyValue`(propertyName: String): RoomPropertyValue =
-    operationOnProperty(propertyName)(f => RoomPropertyValue propertyValueFrom (this --> f))
+    operationOnProperty(propertyName)(f => RoomPropertyValue of (this --> f))
 
   override def propertyOf(propertyName: String): RoomProperty =
-    operationOnProperty(propertyName)(f => RoomProperty(propertyName, RoomPropertyValue propertyValueFrom (this --> f)))
+    operationOnProperty(propertyName)(f => RoomProperty(propertyName, RoomPropertyValue of (this --> f)))
 
   /**
    * Setter of room properties.
