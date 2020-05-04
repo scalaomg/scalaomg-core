@@ -168,6 +168,6 @@ private[scalaomg] trait RoomJsonSupport extends SprayJsonSupport with DefaultJso
   implicit val filterOptionsJsonFormat: RootJsonFormat[FilterOptions] = new RootJsonFormat[FilterOptions] {
     override def write(obj: FilterOptions): JsValue = obj.options.map(filterOptionJsonFormat write).toJson
 
-    override def read(json: JsValue): FilterOptions = FilterOptions(json.convertTo[Seq[FilterOption]])
+    override def read(json: JsValue): FilterOptions = FilterOptions(json.convertTo[Set[FilterOption]])
   }
 }
