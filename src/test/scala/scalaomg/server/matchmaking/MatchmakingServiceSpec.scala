@@ -2,19 +2,25 @@ package scalaomg.server.matchmaking
 
 import java.util.UUID
 
-import akka.actor.{ActorSystem, PoisonPill}
+import akka.pattern.ask
+import akka.actor.{ActorRef, ActorSystem, PoisonPill}
 import akka.testkit.{ImplicitSender, TestKit}
 import com.typesafe.config.ConfigFactory
+import org.scalatest.concurrent.Eventually
 import scalaomg.common.communication.CommunicationProtocol.ProtocolMessageType._
 import scalaomg.common.communication.CommunicationProtocol.{MatchmakingInfo, ProtocolMessage}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll}
-import scalaomg.server.core.RoomHandler
+import scalaomg.common.room.Room
+import scalaomg.server.core.RoomHandlingService
+import scalaomg.server.core.RoomHandlingService.{DefineRoomType, GetMatchmakingRooms}
 import scalaomg.server.matchmaking.MatchmakingService.{JoinQueue, LeaveQueue}
 import scalaomg.server.utils.TestClient
 import test_utils.ExampleRooms._
 import test_utils.TestConfig
+
+import scala.concurrent.Await
 
 class MatchmakingServiceSpec extends TestKit(ActorSystem("ServerSystem", ConfigFactory.load()))
   with ImplicitSender
@@ -22,13 +28,15 @@ class MatchmakingServiceSpec extends TestKit(ActorSystem("ServerSystem", ConfigF
   with AnyWordSpecLike
   with BeforeAndAfter
   with BeforeAndAfterAll
-  with TestConfig {
+  with TestConfig with Eventually {
 
   import akka.testkit.TestActorRef
+  import scala.concurrent.duration._
+  override implicit val patienceConfig: PatienceConfig = PatienceConfig(20 seconds, 25 millis)
 
   private var matchmakingServiceActor: TestActorRef[MatchmakingService[_]] = _
   private var matchmakingServiceState: MatchmakingService[_] = _
-  private var roomHandler: RoomHandler = _
+  private var roomHandler: ActorRef = _
   private var client1: TestClient = _
   private var client2: TestClient = _
 
@@ -42,8 +50,8 @@ class MatchmakingServiceSpec extends TestKit(ActorSystem("ServerSystem", ConfigF
   before {
     client1 = TestClient(UUID.randomUUID.toString)
     client2 = TestClient(UUID.randomUUID.toString)
-    roomHandler = RoomHandler()
-    roomHandler.defineRoomType(NoPropertyRoom.name, NoPropertyRoom.apply)
+    roomHandler = this.system actorOf RoomHandlingService()
+    Await.ready(roomHandler ? DefineRoomType(NoPropertyRoom.name, NoPropertyRoom.apply), DefaultTimeout)
     matchmakingServiceActor =
       TestActorRef(new MatchmakingService(matchmakingStrategy, NoPropertyRoom.name, roomHandler))
     matchmakingServiceState = matchmakingServiceActor.underlyingActor
@@ -51,6 +59,7 @@ class MatchmakingServiceSpec extends TestKit(ActorSystem("ServerSystem", ConfigF
 
   after {
     matchmakingServiceActor ! PoisonPill
+    roomHandler ! PoisonPill
   }
 
   override def afterAll(): Unit = {
@@ -82,20 +91,27 @@ class MatchmakingServiceSpec extends TestKit(ActorSystem("ServerSystem", ConfigF
     "remove clients when they match the matchmaking rule" in {
       matchmakingServiceActor ! JoinQueue(client1, None)
       matchmakingServiceActor ! JoinQueue(client2, None)
-      assert(matchmakingServiceState.waitingClients.isEmpty)
+      eventually {
+        assert(matchmakingServiceState.waitingClients.isEmpty)
+      }
     }
 
     "send clients a MatchCreated message with session id and roomId when they are matched with other players" in {
       matchmakingServiceActor ! JoinQueue(client1, None)
       matchmakingServiceActor ! JoinQueue(client2, None)
-      assert(receivedMatchCreatedMessage(client1))
-      assert(receivedMatchCreatedMessage(client2))
+      eventually {
+        assert(receivedMatchCreatedMessage(client1))
+        assert(receivedMatchCreatedMessage(client2))
+      }
     }
 
     "create the room when some clients match the matchmaking strategy" in {
       matchmakingServiceActor ! JoinQueue(client1, None)
       matchmakingServiceActor ! JoinQueue(client2, None)
-      assert(roomHandler.matchmakingRooms().nonEmpty)
+      val matchmakingRooms = Await.result(roomHandler ? GetMatchmakingRooms(), DefaultTimeout).asInstanceOf[Seq[Room]]
+      eventually {
+        assert(matchmakingRooms.nonEmpty)
+      }
     }
   }
 

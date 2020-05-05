@@ -6,16 +6,16 @@ import akka.http.scaladsl.model.ws.{Message, TextMessage}
 import akka.stream.scaladsl.{Concat, Flow, Sink, Source}
 import akka.testkit.{ImplicitSender, TestKit}
 import com.typesafe.config.ConfigFactory
-import scalaomg.common.communication.CommunicationProtocol.ProtocolMessage
-import scalaomg.common.communication.CommunicationProtocol.ProtocolMessageType._
-import scalaomg.common.communication.TextProtocolSerializer
 import org.scalatest.concurrent.Eventually
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll}
-import scalaomg.server.room.{RoomActor, ServerRoom}
+import scalaomg.common.communication.CommunicationProtocol.ProtocolMessage
+import scalaomg.common.communication.CommunicationProtocol.ProtocolMessageType._
+import scalaomg.common.communication.TextProtocolSerializer
 import scalaomg.server.communication
-import scalaomg.server.core.RoomHandler
+import scalaomg.server.core.RoomHandlingService
+import scalaomg.server.room.{RoomActor, ServerRoom}
 
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Promise}
@@ -30,11 +30,12 @@ class RoomSocketSpec extends TestKit(ActorSystem("RoomSocketFlow", ConfigFactory
 
   override implicit val patienceConfig: PatienceConfig = PatienceConfig(20 seconds, 25 millis)
 
-  private val MaxAwaitSocketMessages = 2 seconds
+  private val MaxAwaitSocketMessages = 5 seconds
   private val IdleConnectionTimeout = 2 seconds
   private val KeepAliveRate = 300 millis
 
   private var room: ServerRoom = _
+  private var roomHandler: ActorRef = _
   private var roomActor: ActorRef = _
   private var roomSocketFlow: RoomSocket = _
   private var flow: Flow[Message, Message, Any] = _
@@ -46,7 +47,8 @@ class RoomSocketSpec extends TestKit(ActorSystem("RoomSocketFlow", ConfigFactory
 
   before {
     room = ServerRoom()
-    roomActor = system actorOf RoomActor(room, RoomHandler())
+    roomHandler = system actorOf RoomHandlingService()
+    roomActor = system actorOf RoomActor(room, roomHandler)
     roomSocketFlow =
       communication.RoomSocket(roomActor, TextProtocolSerializer(), ConnectionConfigurations(IdleConnectionTimeout))
     flow = roomSocketFlow.open()

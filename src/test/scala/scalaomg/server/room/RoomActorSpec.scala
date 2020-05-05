@@ -5,13 +5,13 @@ import java.util.UUID
 import akka.actor.{ActorRef, ActorSystem, PoisonPill}
 import akka.testkit.{ImplicitSender, TestKit, TestProbe}
 import com.typesafe.config.ConfigFactory
-import scalaomg.common.communication.CommunicationProtocol.ProtocolMessageType._
-import scalaomg.common.communication.CommunicationProtocol.ProtocolMessage
-import scalaomg.common.room.Room
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll}
-import scalaomg.server.core.RoomHandler
+import scalaomg.common.communication.CommunicationProtocol.ProtocolMessage
+import scalaomg.common.communication.CommunicationProtocol.ProtocolMessageType._
+import scalaomg.common.room.Room
+import scalaomg.server.core.RoomHandlingService
 import scalaomg.server.room.RoomActor._
 
 import scala.concurrent.duration._
@@ -27,13 +27,11 @@ class RoomActorSpec extends TestKit(ActorSystem("Rooms", ConfigFactory.load()))
   private val FakeClient_2 = makeClient()
 
   private var room: ServerRoom = _
-  private var roomHandler: RoomHandler = _
   private var roomActor: ActorRef = _
 
   before {
     room = ServerRoom(autoClose = true)
-    roomHandler = RoomHandler()
-    roomActor = system actorOf RoomActor(room, roomHandler)
+    roomActor = system actorOf RoomActor(room, system actorOf RoomHandlingService())
   }
 
   after {
@@ -129,8 +127,7 @@ class RoomActorSpec extends TestKit(ActorSystem("Rooms", ConfigFactory.load()))
 
     "not automatically close the room if automaticClose is set to false" in {
       room = ServerRoom()
-      roomHandler = RoomHandler()
-      roomActor = system actorOf RoomActor(room, roomHandler)
+      roomActor = system actorOf RoomActor(room, system actorOf RoomHandlingService())
       val probe = TestProbe()
       probe watch roomActor
       Thread.sleep((room.autoCloseTimeout.toSeconds + 2 seconds).toMillis)

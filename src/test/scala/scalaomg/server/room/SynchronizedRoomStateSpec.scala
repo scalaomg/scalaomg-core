@@ -1,14 +1,14 @@
 package scalaomg.server.room
 
 import akka.actor.{ActorRef, ActorSystem}
-import scalaomg.common.communication.CommunicationProtocol.ProtocolMessageType._
-import scalaomg.common.communication.CommunicationProtocol.{ProtocolMessage, SocketSerializable}
-import scalaomg.common.room.Room
 import org.scalatest.concurrent.Eventually
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll}
-import scalaomg.server.core.RoomHandler
+import scalaomg.common.communication.CommunicationProtocol.ProtocolMessageType._
+import scalaomg.common.communication.CommunicationProtocol.{ProtocolMessage, SocketSerializable}
+import scalaomg.common.room.Room
+import scalaomg.server.core.RoomHandlingService
 import scalaomg.server.utils.TestClient
 import test_utils.TestConfig
 
@@ -33,7 +33,7 @@ class SynchronizedRoomStateSpec extends AnyWordSpecLike
   before {
     // Can't directly use roomHandler.createRoom since we need server room type instance
     room = RoomWithState()
-    roomActor = actorSystem actorOf RoomActor(room, RoomHandler())
+    roomActor = actorSystem actorOf RoomActor(room, actorSystem actorOf RoomHandlingService())
     client1 = TestClient()
     client2 = TestClient()
     room.tryAddClient(client1, Room.DefaultPublicPassword)

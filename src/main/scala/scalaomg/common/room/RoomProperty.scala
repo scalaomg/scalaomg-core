@@ -55,7 +55,7 @@ object RoomPropertyValue {
    * @return a [[RoomPropertyValue]] that embeds the input value
    */
   // Useful when we can't directly instantiate the property value since we don't know the type of the value
-  def of[T](value: T): RoomPropertyValue = value match {
+  def propertyValueFrom[T](value: T): RoomPropertyValue = value match {
     case v: Int => IntRoomPropertyValue(v)
     case v: String => StringRoomPropertyValue(v)
     case v: Boolean => BooleanRoomPropertyValue(v)

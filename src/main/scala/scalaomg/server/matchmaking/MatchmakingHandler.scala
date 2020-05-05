@@ -6,7 +6,6 @@ import akka.stream.scaladsl.Flow
 import scalaomg.common.communication.BinaryProtocolSerializer
 import scalaomg.common.room.Room.RoomType
 import scalaomg.server.communication.MatchmakingSocket
-import scalaomg.server.core.RoomHandler
 
 private[server] trait MatchmakingHandler {
 
@@ -27,12 +26,12 @@ private[server] trait MatchmakingHandler {
 }
 
 private[server] object MatchmakingHandler {
-  def apply(roomHandler: RoomHandler) (implicit actorSystem: ActorSystem): MatchmakingHandler =
+  def apply(roomHandler: ActorRef) (implicit actorSystem: ActorSystem): MatchmakingHandler =
     new MatchmakingHandlerImpl(roomHandler)
 }
 
 
-private class MatchmakingHandlerImpl(private val roomHandler: RoomHandler)
+private class MatchmakingHandlerImpl(private val roomHandler: ActorRef)
                             (implicit actorSystem: ActorSystem) extends MatchmakingHandler {
   private var matchmakers: Map[RoomType, ActorRef] = Map()
 
