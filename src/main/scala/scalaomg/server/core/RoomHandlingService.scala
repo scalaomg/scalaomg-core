@@ -83,7 +83,7 @@ private[server] object RoomHandlingService {
    */
   case class HandleClientConnection(roomId: RoomId)
 
-  //Possibible responses of this actor
+  //Possible responses of this actor
   case object RoomTypeDefined
   case object RoomRemoved
   case class RoomCreated(room: SharedRoom)

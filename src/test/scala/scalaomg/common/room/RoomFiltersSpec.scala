@@ -46,7 +46,6 @@ class RoomFiltersSpec extends AnyFlatSpec with Matchers with BeforeAndAfter {
     checkFilterOptionCorrectness(options.find(_.name == stringPropertyName).get)(stringProperty.name, EqualStrategy(), "aba")
     checkFilterOptionCorrectness(options.find(_.name == booleanPropertyName).get)(booleanProperty.name, EqualStrategy(), true)
     checkFilterOptionCorrectness(options.find(_.name == doublePropertyName).get)(doubleProperty.name, LowerStrategy(), 0.3)
-
   }
 
   private def checkFilterOptionCorrectness(option: FilterOption)(propertyName: String, strategy: FilterStrategy, value: RoomPropertyValue): Unit = {
