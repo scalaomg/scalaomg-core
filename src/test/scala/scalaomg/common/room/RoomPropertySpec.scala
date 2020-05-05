@@ -33,12 +33,12 @@ class RoomPropertySpec extends AnyFlatSpec
 
   it should "instantiate the correct property value, starting from an unknown type" in {
     val intValue = 1; val intTest: Any = intValue
-    RoomPropertyValue propertyValueFrom intTest shouldEqual IntRoomPropertyValue(intValue)
+    RoomPropertyValue of intTest shouldEqual IntRoomPropertyValue(intValue)
     val stringValue = "abc"; val stringTest: Any = stringValue
-    RoomPropertyValue propertyValueFrom stringTest shouldEqual StringRoomPropertyValue(stringValue)
+    RoomPropertyValue of stringTest shouldEqual StringRoomPropertyValue(stringValue)
     val booleanValue = true; val booleanTest: Any = booleanValue
-    RoomPropertyValue propertyValueFrom booleanTest shouldEqual BooleanRoomPropertyValue(booleanValue)
+    RoomPropertyValue of booleanTest shouldEqual BooleanRoomPropertyValue(booleanValue)
     val doubleValue = 0.1; val doubleTest: Any = doubleValue
-    RoomPropertyValue propertyValueFrom doubleTest shouldEqual DoubleRoomPropertyValue(doubleValue)
+    RoomPropertyValue of doubleTest shouldEqual DoubleRoomPropertyValue(doubleValue)
   }
 }

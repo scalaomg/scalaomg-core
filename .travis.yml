@@ -29,4 +29,7 @@ jobs:
     - jdk: openjdk-ea
 
 script:
-  - sbt scalastyle && sbt test
+  - sbt clean scalastyle coverage test coverageReport
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
