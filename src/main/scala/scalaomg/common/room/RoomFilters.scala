@@ -64,7 +64,7 @@ case class LowerStrategy() extends FilterStrategy {
 /**
  * Room property "decorator" that enables the usage of filters.
  */
-trait FilterStrategies { property: RoomProperty =>
+private[scalaomg] trait FilterStrategies extends Property {
 
   /**
    * It applies [[EqualStrategy]] on the property.
@@ -95,7 +95,7 @@ trait FilterStrategies { property: RoomProperty =>
   def <(that: RoomPropertyValue): FilterOption = createFilterOption(LowerStrategy(), that)
 
   private def createFilterOption(filterStrategy: FilterStrategy, that: RoomPropertyValue): FilterOption =
-    FilterOption(property.name, filterStrategy, that)
+    FilterOption(name, filterStrategy, that)
 }
 
 /**

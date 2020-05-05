@@ -1,14 +1,35 @@
 package scalaomg.common.room
 
 /**
- * Concept of room property.
- * @param name the name of the room property
- * @param value the value of the property
+ * Concept of property with a name.
  */
-case class RoomProperty(name: String, value: RoomPropertyValue) extends FilterStrategies
+private[scalaomg] trait Property {
+  /**
+   * The name of the property.
+   */
+  val name: String
+}
 
 /**
- * Excpetion representing the absence of a room property
+ * Basic room property that specifies a value for the property.
+ */
+private[scalaomg] sealed trait BasicRoomProperty extends Property {
+  /**
+   * The value of the property.
+   */
+  val value: RoomPropertyValue
+}
+
+/**
+ * Complete room property.
+ * @param name the name of the property
+ * @param value the value of the property
+ */
+case class RoomProperty(override val name: String, override val value: RoomPropertyValue)
+  extends BasicRoomProperty with FilterStrategies
+
+/**
+ * Exception representing the absence of a room property.
  * @param message the error message to display
  * @param cause the cause of the exception
  */
