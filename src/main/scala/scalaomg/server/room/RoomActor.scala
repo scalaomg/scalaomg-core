@@ -1,10 +1,10 @@
 package scalaomg.server.room
 
-import akka.actor.{Actor, PoisonPill, Props, Timers}
+import akka.actor.{Actor, ActorRef, PoisonPill, Props, Timers}
 import scalaomg.common.communication.CommunicationProtocol.ProtocolMessage
 import scalaomg.common.communication.CommunicationProtocol.ProtocolMessageType._
 import scalaomg.common.room.Room.RoomPassword
-import scalaomg.server.core.RoomHandler
+import scalaomg.server.core.RoomHandlingService.RemoveRoom
 
 import scala.concurrent.ExecutionContextExecutor
 
@@ -17,7 +17,7 @@ private[server] object RoomActor {
    * @param roomHandler the room handler that is charged to handle the room
    * @return [[akka.actor.Props]] needed to create the actor
    */
-  def apply(serverRoom: ServerRoom, roomHandler: RoomHandler): Props = Props(classOf[RoomActor], serverRoom, roomHandler)
+  def apply(serverRoom: ServerRoom, roomHandler: ActorRef): Props = Props(classOf[RoomActor], serverRoom, roomHandler)
 
   /**
    * It triggers the synchronization of public room state between clients.
@@ -85,7 +85,7 @@ private[server] object RoomActor {
  * @param serverRoom the room linked with this actor
  */
 private[server] class RoomActor(private val serverRoom: ServerRoom,
-                                private val roomHandler: RoomHandler) extends Actor with Timers {
+                                private val roomHandler: ActorRef) extends Actor with Timers {
 
   import RoomActor._
   implicit val executionContext: ExecutionContextExecutor = this.context.system.dispatcher
@@ -130,7 +130,7 @@ private[server] class RoomActor(private val serverRoom: ServerRoom,
       }
 
     case Close =>
-      roomHandler removeRoom serverRoom.roomId
+      roomHandler ! RemoveRoom(serverRoom.roomId)
       self ! PoisonPill
 
     case StartAutoCloseTimeout =>

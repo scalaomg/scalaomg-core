@@ -1,13 +1,19 @@
 package scalaomg.server.routing_service
 
+import akka.actor.ActorRef
+import akka.http.scaladsl.model.ws.Message
 import akka.http.scaladsl.server.Directives.{complete, get, _}
 import akka.http.scaladsl.server.Route
+import akka.stream.scaladsl.Flow
+import akka.util.Timeout
 import scalaomg.common.http.Routes
 import scalaomg.common.room.Room.{RoomId, RoomType}
-import scalaomg.common.room.{FilterOptions, RoomJsonSupport, RoomProperty}
-import scalaomg.server.core.RoomHandler
+import scalaomg.common.room.{FilterOptions, RoomJsonSupport, RoomProperty, SharedRoom}
+import scalaomg.server.core.RoomHandlingService._
 import scalaomg.server.matchmaking.{Matchmaker, MatchmakingHandler}
 import scalaomg.server.room.ServerRoom
+
+import scala.concurrent.{Await, ExecutionContext}
 
 private[server] sealed trait RoutingService {
 
@@ -26,9 +32,10 @@ private[server] sealed trait RoutingService {
 
   /**
    * Add a route for a type of room that enable matchmaking
+   *
    * @param roomTypeName room type name used as the route name
    * @param roomFactory  a factory to create rooms of that type
-   * @param matchmaker the matchmaker to associate to the given room type
+   * @param matchmaker   the matchmaker to associate to the given room type
    */
   def addRouteForMatchmaking[T](roomTypeName: String, roomFactory: () => ServerRoom)(matchmaker: Matchmaker[T])
 }
@@ -37,17 +44,25 @@ private[server] object RoutingService {
 
   /**
    * It creates a routing service.
-   * @param roomHandler the room handler used when redirecting requests about rooms.
+   *
+   * @param roomHandler       the room handler used when redirecting requests about rooms.
    * @param matchmakerHandler the matchmaking service used when redirecting requests about matchmaking.
    * @return the routing service created
    */
-  def apply(roomHandler: RoomHandler, matchmakerHandler: MatchmakingHandler): RoutingService =
+  def apply(roomHandler: ActorRef, matchmakerHandler: MatchmakingHandler)
+           (implicit executionContext: ExecutionContext): RoutingService =
     new RoutingServiceImpl(roomHandler, matchmakerHandler)
 }
 
-private class RoutingServiceImpl(private val roomHandler: RoomHandler,
-                         private val matchmakingHandler: MatchmakingHandler
-                        ) extends RoutingService with RoomJsonSupport {
+private class RoutingServiceImpl(private val roomHandler: ActorRef,
+                                 private val matchmakingHandler: MatchmakingHandler)
+                                (implicit executionContext: ExecutionContext)
+  extends RoutingService with RoomJsonSupport {
+
+  import akka.pattern.ask
+
+  import scala.concurrent.duration._
+  private implicit val RoomHandlerTimeout: Timeout = 10 seconds
 
   private var roomTypesRoutes: Set[RoomType] = Set.empty
   private var matchmakingTypesRoutes: Set[RoomType] = Set.empty
@@ -56,7 +71,7 @@ private class RoutingServiceImpl(private val roomHandler: RoomHandler,
 
   override def addRouteForRoomType(roomTypeName: RoomType, roomFactory: () => ServerRoom): Unit = {
     this.roomTypesRoutes = this.roomTypesRoutes + roomTypeName
-    this.roomHandler.defineRoomType(roomTypeName, roomFactory)
+    Await.ready(this.roomHandler ? DefineRoomType(roomTypeName, roomFactory), RoomHandlerTimeout.duration)
   }
 
   override def addRouteForMatchmaking[T](roomTypeName: RoomType, roomFactory: () => ServerRoom)
@@ -96,9 +111,11 @@ private class RoutingServiceImpl(private val roomHandler: RoomHandler,
    */
   private def webSocketConnectionRoute: Route = pathPrefix(Routes.ConnectionRoute / Segment) { roomId =>
     get {
-      roomHandler handleClientConnection roomId match {
-        case Some(handler) => handleWebSocketMessages(handler)
-        case None => reject
+      onSuccess(roomHandler ? HandleClientConnection(roomId)) { flow =>
+        flow.asInstanceOf[Option[Flow[Message, Message, Any]]] match {
+          case Some(handler) => handleWebSocketMessages(handler)
+          case None => reject
+        }
       }
     }
   }
@@ -121,8 +138,9 @@ private class RoutingServiceImpl(private val roomHandler: RoomHandler,
   private def getAllRoomsRoute: Route =
     get {
       entity(as[FilterOptions]) { filterOptions =>
-        val rooms = this.roomHandler.availableRooms(filterOptions)
-        complete(rooms)
+        onSuccess(this.roomHandler ? GetAvailableRooms(filterOptions)) { rooms =>
+          complete(rooms.asInstanceOf[Seq[SharedRoom]])
+        }
       }
     }
 
@@ -132,8 +150,9 @@ private class RoutingServiceImpl(private val roomHandler: RoomHandler,
   private def getRoomsByTypeRoute(roomType: RoomType): Route =
     get {
       entity(as[FilterOptions]) { filterOptions =>
-        val rooms = this.roomHandler.roomsByType(roomType, filterOptions)
-        complete(rooms)
+        onSuccess(this.roomHandler ? GetRoomsByType(roomType, filterOptions)) { rooms =>
+          complete(rooms.asInstanceOf[Seq[SharedRoom]])
+        }
       }
     }
 
@@ -143,8 +162,9 @@ private class RoutingServiceImpl(private val roomHandler: RoomHandler,
   private def postRoomsByTypeRoute(roomType: RoomType): Route =
     post {
       entity(as[Set[RoomProperty]]) { roomProperties =>
-        val room = this.roomHandler.createRoom(roomType, roomProperties)
-        complete(room)
+        onSuccess(this.roomHandler ? CreateRoom(roomType, roomProperties)) { room =>
+          complete(room.asInstanceOf[RoomCreated].room)
+        }
       }
     }
 
@@ -153,9 +173,11 @@ private class RoutingServiceImpl(private val roomHandler: RoomHandler,
    */
   private def getRoomByTypeAndId(roomType: RoomType, roomId: RoomId): Route =
     get {
-      roomHandler.roomByTypeAndId(roomType, roomId) match {
-        case Some(room) => complete(room)
-        case None => reject
+      onSuccess(this.roomHandler ? GetRoomByTypeAndId(roomType, roomId)) { room =>
+        room.asInstanceOf[Option[SharedRoom]] match {
+          case Some(r) => complete(r)
+          case None => reject
+        }
       }
     }
 }

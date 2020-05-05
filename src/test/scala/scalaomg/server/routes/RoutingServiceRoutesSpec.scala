@@ -2,16 +2,16 @@ package scalaomg.server.routes
 
 import akka.http.scaladsl.testkit.{ScalatestRouteTest, WSProbe}
 import akka.testkit.TestKit
-import scalaomg.common.http.{HttpRequests, Routes}
-import scalaomg.common.room.{FilterOptions, RoomJsonSupport, RoomProperty, SharedRoom}
 import org.scalatest.BeforeAndAfter
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import scalaomg.common.http.{HttpRequests, Routes}
+import scalaomg.common.room.RoomPropertyValue.Conversions._
+import scalaomg.common.room.{FilterOptions, RoomJsonSupport, RoomProperty, SharedRoom}
+import scalaomg.server.core.RoomHandlingService
+import scalaomg.server.matchmaking.{Matchmaker, MatchmakingHandler}
 import scalaomg.server.routing_service.RoutingService
 import test_utils.ExampleRooms._
-import scalaomg.common.room.RoomPropertyValue.Conversions._
-import scalaomg.server.core.RoomHandler
-import scalaomg.server.matchmaking.{Matchmaker, MatchmakingHandler}
 
 import scala.concurrent.ExecutionContextExecutor
 
@@ -23,7 +23,7 @@ class RoutingServiceRoutesSpec extends AnyFlatSpec
   with RoomJsonSupport {
 
   private implicit val execContext: ExecutionContextExecutor = system.dispatcher
-  private val roomHandler = RoomHandler()
+  private val roomHandler = system actorOf RoomHandlingService()
   private val routeService = RoutingService(roomHandler, MatchmakingHandler(roomHandler))
   private val route = routeService.route
 

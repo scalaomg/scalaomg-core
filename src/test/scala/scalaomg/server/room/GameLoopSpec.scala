@@ -1,11 +1,11 @@
 package scalaomg.server.room
 
 import akka.actor.{ActorRef, ActorSystem}
-import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll}
 import org.scalatest.concurrent.Eventually
 import org.scalatest.flatspec.AnyFlatSpecLike
 import org.scalatest.matchers.should.Matchers
-import scalaomg.server.core.RoomHandler
+import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll}
+import scalaomg.server.core.RoomHandlingService
 import test_utils.TestConfig
 
 class GameLoopSpec extends AnyFlatSpecLike
@@ -21,11 +21,14 @@ class GameLoopSpec extends AnyFlatSpecLike
   import test_utils.ExampleRooms.RoomWithGameLoop._
   private var room: RoomWithGameLoop = _
   private var roomActor: ActorRef = _
+  private var roomHandler: ActorRef = _
+
 
   before {
     // Can't directly use roomHandler.createRoom since we need server room type instance
     room = RoomWithGameLoop()
-    roomActor = actorSystem actorOf RoomActor(room, RoomHandler())
+    roomHandler = actorSystem actorOf RoomHandlingService()
+    roomActor = actorSystem actorOf RoomActor(room, roomHandler)
   }
 
   behavior of "Server room with game loop"

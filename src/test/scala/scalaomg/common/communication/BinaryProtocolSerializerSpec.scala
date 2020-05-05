@@ -34,6 +34,12 @@ class BinaryProtocolSerializerSpec extends AnyFlatSpec with BeforeAndAfterAll wi
     assert(res equals testMessage)
   }
 
+  it should "deserialize binary messages as streams" in {
+    val testMessage = ProtocolMessage(JoinOk, "", "random payload")
+    val streamMessage = BinaryMessage.Streamed(serializer.prepareToSocket(testMessage).dataStream)
+    val res = Await.result(serializer.parseFromSocket(streamMessage), DefaultDuration)
+    assert(res equals testMessage)
+  }
 
   it should "correctly parse text messages with no payload and no sessionId received from a socket" in {
     val testMessage = ProtocolMessage(JoinOk)

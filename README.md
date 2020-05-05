@@ -1,9 +1,9 @@
 # scala-omg
 A Scala library for online multiplayer games
 
-[![Build Status](https://travis-ci.org/scalaomg/scalaomg-core.svg?branch=master)](https://travis-ci.org/scalaomg/scalaomg-core)
+[![Build Status](https://travis-ci.org/scalaomg/scalaomg-core.svg?branch=develop)](https://travis-ci.org/scalaomg/scalaomg-core)
 [![License](http://img.shields.io/badge/License-MIT-blue.svg)](https://mit-license.org/)
-[![codecov](https://codecov.io/gh/scalaomg/scalaomg-core/branch/master/graph/badge.svg)](https://codecov.io/gh/scalaomg/scalaomg-core)
+[![codecov](https://codecov.io/gh/scalaomg/scalaomg-core/branch/develop/graph/badge.svg)](https://codecov.io/gh/scalaomg/scalaomg-core)
 
 ## Description
 
