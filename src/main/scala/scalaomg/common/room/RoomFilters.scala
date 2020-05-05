@@ -100,47 +100,47 @@ private[scalaomg] trait FilterStrategies extends Property {
 
 /**
  * It encapsulates the info of a filter.
- * @param optionName the name of the property to be filtered
+ * @param name the name of the property to be filtered
  * @param strategy the strategy used when filtering the property
  * @param value the value used to filter the property
  */
-case class FilterOption(optionName: String, strategy: FilterStrategy, value: RoomPropertyValue) {
+case class FilterOption(name: String, strategy: FilterStrategy, value: RoomPropertyValue) {
 
   /**
    * It concatenates two filters.
    * @param filterOpt the new filter
    * @return [[FilterOptions]] that contains both filters
    */
-  def and(filterOpt: FilterOption): FilterOptions = FilterOptions(Seq(this, filterOpt))
+  def and(filterOpt: FilterOption): FilterOptions = FilterOptions(Set(this, filterOpt))
 }
 
 object FilterOptions {
   /**
    * It creates a [[FilterOptions]] containing just the given filter.
    * @param filter the filter to create
-   * @return [[FilterOptions]] containing the gven filter
+   * @return [[FilterOptions]] containing the given filter
    */
-  def just(filter: FilterOption): FilterOptions = FilterOptions(Seq(filter))
+  def just(filter: FilterOption): FilterOptions = FilterOptions(Set(filter))
 
   /**
    * It creates an empty filter.
    * @return [[FilterOptions]] without any filter
    */
-  def empty: FilterOptions = FilterOptions(Seq.empty[FilterOption])
+  def empty: FilterOptions = FilterOptions(Set.empty[FilterOption])
 }
 
 /**
  * It encapsulates few different filters.
  * @param options the filters
  */
-case class FilterOptions(options: Seq[FilterOption]) {
+case class FilterOptions(options: Set[FilterOption]) {
 
   /**
    * It adds a new filter to current filters.
    * @param that the new filter
    * @return [[FilterOptions]] that contains all previous filters plus the new one
    */
-  def and(that: FilterOption): FilterOptions = FilterOptions(options :+ that)
+  def and(that: FilterOption): FilterOptions = FilterOptions(options + that)
 
   /**
    * It merges a given [[FilterOptions]] to this.

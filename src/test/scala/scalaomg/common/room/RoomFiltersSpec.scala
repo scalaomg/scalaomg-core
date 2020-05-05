@@ -42,14 +42,15 @@ class RoomFiltersSpec extends AnyFlatSpec with Matchers with BeforeAndAfter {
     val filter = intProperty =!= 1 and stringProperty =:= "aba" and booleanProperty =:= true and doubleProperty < 0.3
     val options = filter.options
     options should have size 4
-    checkFilterOptionCorrectness(options.head)(intProperty.name, NotEqualStrategy(), 1)
-    checkFilterOptionCorrectness(options(1))(stringProperty.name, EqualStrategy(), "aba")
-    checkFilterOptionCorrectness(options(2))(booleanProperty.name, EqualStrategy(), true)
-    checkFilterOptionCorrectness(options(3))(doubleProperty.name, LowerStrategy(), 0.3)
+    checkFilterOptionCorrectness(options.find(_.name == intPropertyName).get)(intProperty.name, NotEqualStrategy(), 1)
+    checkFilterOptionCorrectness(options.find(_.name == stringPropertyName).get)(stringProperty.name, EqualStrategy(), "aba")
+    checkFilterOptionCorrectness(options.find(_.name == booleanPropertyName).get)(booleanProperty.name, EqualStrategy(), true)
+    checkFilterOptionCorrectness(options.find(_.name == doublePropertyName).get)(doubleProperty.name, LowerStrategy(), 0.3)
+
   }
 
   private def checkFilterOptionCorrectness(option: FilterOption)(propertyName: String, strategy: FilterStrategy, value: RoomPropertyValue): Unit = {
-    option.optionName shouldEqual propertyName
+    option.name shouldEqual propertyName
     option.strategy shouldEqual strategy
     option.value shouldEqual value
   }
