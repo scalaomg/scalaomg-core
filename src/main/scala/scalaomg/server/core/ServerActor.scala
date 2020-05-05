@@ -12,6 +12,8 @@ import scalaomg.server.core.ServerActor._
 import scalaomg.server.matchmaking.{Matchmaker, MatchmakingHandler}
 import scalaomg.server.room.ServerRoom
 import scalaomg.server.routing_service.RoutingService
+import akka.pattern.ask
+import akka.util.Timeout
 
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.{FiniteDuration, _}
@@ -105,12 +107,14 @@ private[server] object ServerActor {
 
 private class ServerActor(private val terminationDeadline: FiniteDuration,
                           private val additionalRoutes: Route) extends Actor with Stash {
+  private implicit val RoomHandlerTimeout: Timeout = 10 seconds
   implicit val actorSystem: ActorSystem = context.system
   implicit val executionContext: ExecutionContextExecutor = actorSystem.dispatcher
 
-  private val roomHandler = RoomHandler()
-  private val matchmakingHandler = MatchmakingHandler(roomHandler)
-  private val routeService = RoutingService(roomHandler, matchmakingHandler)
+  // private val roomHandler = RoomHandler()
+  private val roomHandlerService = actorSystem actorOf RoomHandlingService()
+  private val matchmakingHandler = MatchmakingHandler(roomHandlerService)
+  private val routeService = RoutingService(roomHandlerService, matchmakingHandler)
 
   override def receive: Receive = idle orElse roomHandling
 
@@ -167,7 +171,7 @@ private class ServerActor(private val terminationDeadline: FiniteDuration,
       this.routeService.addRouteForMatchmaking(roomType, room)(matchmaker)
       sender ! RouteAdded
     case CreateRoom(roomType, properties) =>
-      this.roomHandler.createRoom(roomType, properties)
-      sender ! RoomCreated
+      val replyTo = sender
+      (this.roomHandlerService ? RoomHandlingService.CreateRoom(roomType, properties)) foreach (_ => replyTo ! RoomCreated)
   }
 }

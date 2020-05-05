@@ -18,7 +18,7 @@ import scala.concurrent.{Await, ExecutionContext}
 import scala.util.{Failure, Success}
 import test_utils.ExampleRooms._
 
-class MatchmakingActorSpec extends TestKit(ActorSystem("ClientSystem", ConfigFactory.load()))
+class MatchmakingActorSpec extends TestKit(ActorSystem("MatchmakingActorSpec", ConfigFactory.load()))
   with ImplicitSender
   with AnyWordSpecLike
   with Matchers
@@ -48,10 +48,6 @@ class MatchmakingActorSpec extends TestKit(ActorSystem("ClientSystem", ConfigFac
 
     gameServer = GameServer(ServerAddress, ServerPort)
     gameServer.defineRoomWithMatchmaking(ClosableRoomWithState.name, () => ServerRoom(), matchmaker)
-    gameServer.defineRoomWithMatchmaking(
-      ClosableRoomWithState.name,
-      () => ExampleRooms.ClosableRoomWithState(),
-      matchmaker)
     Await.ready(gameServer.start(), DefaultDuration)
   }
 
@@ -65,11 +61,9 @@ class MatchmakingActorSpec extends TestKit(ActorSystem("ClientSystem", ConfigFac
     "join a matchmaking queue and return matchmaking infos when the match is created" in {
       matchmakingActor1 ! JoinMatchmaking
       matchmakingActor2 ! JoinMatchmaking
-      expectMsgPF() {
-        case Success(res) =>
-          assert(res.isInstanceOf[MatchmakingInfo])
-        case Failure(ex) =>
-          println(ex.toString)
+      expectMsgPF(max = DefaultDuration) {
+        case Success(res) => assert(res.isInstanceOf[MatchmakingInfo])
+        case Failure(ex) => println(ex.toString)
       }
     }
 

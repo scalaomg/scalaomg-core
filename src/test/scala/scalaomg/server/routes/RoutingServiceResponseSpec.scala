@@ -1,13 +1,15 @@
 package scalaomg.server.routes
 
+import akka.actor.ActorRef
+import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import akka.testkit.TestKit
-import scalaomg.common.http.HttpRequests
-import scalaomg.common.room.{RoomJsonSupport, RoomProperty, SharedRoom}
 import org.scalatest.BeforeAndAfter
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import scalaomg.server.core.RoomHandler
+import scalaomg.common.http.HttpRequests
+import scalaomg.common.room.{RoomJsonSupport, RoomProperty, SharedRoom}
+import scalaomg.server.core.RoomHandlingService
 import scalaomg.server.matchmaking.MatchmakingHandler
 import scalaomg.server.room.ServerRoom
 import scalaomg.server.routing_service.RoutingService
@@ -21,14 +23,14 @@ class RoutingServiceResponseSpec extends AnyFlatSpec with Matchers
   with BeforeAndAfter {
 
   private implicit val execContext: ExecutionContextExecutor = system.dispatcher
-  private var roomHandler = RoomHandler()
-  private var routeService = RoutingService(roomHandler, MatchmakingHandler(roomHandler))
-  private var route = routeService.route
+  private var roomHandler: ActorRef = _
+  private var routeService: RoutingService = _
+  private var route: Route = _
 
   behavior of "Route Service routing with room handling"
 
   before {
-    roomHandler = RoomHandler()
+    roomHandler = system actorOf RoomHandlingService()
     routeService = RoutingService(roomHandler, MatchmakingHandler(roomHandler))
     route = routeService.route
 
