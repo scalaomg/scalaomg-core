@@ -1,4 +1,4 @@
-package scalaomg.server.room
+package scalaomg.server.room.features
 
 import akka.actor.{ActorRef, ActorSystem}
 import org.scalatest.concurrent.Eventually
@@ -8,7 +8,7 @@ import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll}
 import scalaomg.common.communication.CommunicationProtocol.ProtocolMessageType._
 import scalaomg.common.communication.CommunicationProtocol.{ProtocolMessage, SocketSerializable}
 import scalaomg.common.room.Room
-import scalaomg.server.core.RoomHandlingService
+import scalaomg.server.room.{RoomActor, RoomHandlingService}
 import scalaomg.server.utils.TestClient
 import test_utils.TestConfig
 

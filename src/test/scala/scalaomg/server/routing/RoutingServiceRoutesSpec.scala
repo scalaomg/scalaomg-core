@@ -1,4 +1,4 @@
-package scalaomg.server.routes
+package scalaomg.server.routing
 
 import akka.http.scaladsl.testkit.{ScalatestRouteTest, WSProbe}
 import akka.testkit.TestKit
@@ -8,9 +8,8 @@ import org.scalatest.matchers.should.Matchers
 import scalaomg.common.http.{HttpRequests, Routes}
 import scalaomg.common.room.RoomPropertyValue.Conversions._
 import scalaomg.common.room.{FilterOptions, RoomJsonSupport, RoomProperty, SharedRoom}
-import scalaomg.server.core.RoomHandlingService
 import scalaomg.server.matchmaking.{Matchmaker, MatchmakingHandler}
-import scalaomg.server.routing_service.RoutingService
+import scalaomg.server.room.RoomHandlingService
 import test_utils.ExampleRooms._
 
 import scala.concurrent.ExecutionContextExecutor

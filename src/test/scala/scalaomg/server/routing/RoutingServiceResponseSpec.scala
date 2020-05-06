@@ -1,4 +1,4 @@
-package scalaomg.server.routes
+package scalaomg.server.routing
 
 import akka.actor.ActorRef
 import akka.http.scaladsl.server.Route
@@ -9,10 +9,8 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import scalaomg.common.http.HttpRequests
 import scalaomg.common.room.{RoomJsonSupport, RoomProperty, SharedRoom}
-import scalaomg.server.core.RoomHandlingService
 import scalaomg.server.matchmaking.MatchmakingHandler
-import scalaomg.server.room.ServerRoom
-import scalaomg.server.routing_service.RoutingService
+import scalaomg.server.room.{RoomHandlingService, ServerRoom}
 
 import scala.concurrent.ExecutionContextExecutor
 

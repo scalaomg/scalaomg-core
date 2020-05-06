@@ -1,6 +1,7 @@
 package scalaomg.server.room
 
 import java.lang.reflect.Field
+
 import akka.actor.ActorRef
 import scalaomg.common.communication.CommunicationProtocol.ProtocolMessageType._
 import scalaomg.common.communication.CommunicationProtocol.{ProtocolMessage, ProtocolMessageType, SocketSerializable}
@@ -8,6 +9,7 @@ import scalaomg.common.room.Room.{RoomId, RoomPassword}
 import scalaomg.common.room._
 import scalaomg.server.communication.ConnectionConfigurations
 import scalaomg.server.room.RoomActor.Close
+import scalaomg.server.room.features.{GameLoop, MatchmakingSupport, PrivateRoomSupport, ReconnectionSupport, RoomLockingSupport, SynchronizedRoomState}
 
 trait ServerRoom extends BasicRoom
   with PrivateRoomSupport

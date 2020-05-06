@@ -1,9 +1,10 @@
-package scalaomg.server.room
+package scalaomg.server.room.features
 
-import scalaomg.common.communication.CommunicationProtocol.{ProtocolMessage, SocketSerializable}
 import scalaomg.common.communication.CommunicationProtocol.ProtocolMessageType._
+import scalaomg.common.communication.CommunicationProtocol.{ProtocolMessage, SocketSerializable}
 import scalaomg.common.room.RoomProperty
 import scalaomg.server.room.RoomActor.StateSyncTick
+import scalaomg.server.room.{Client, ServerRoom}
 import scalaomg.server.utils.Timer
 
 /**

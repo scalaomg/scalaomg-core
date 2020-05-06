@@ -2,6 +2,7 @@ package test_utils
 
 import scalaomg.server.communication.ConnectionConfigurations
 import scalaomg.server.room._
+import scalaomg.server.room.features.{GameLoop, SynchronizedRoomState}
 
 /**
  * Rooms used for testing purpose.

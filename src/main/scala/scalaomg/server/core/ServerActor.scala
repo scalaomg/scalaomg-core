@@ -10,8 +10,8 @@ import scalaomg.common.room.Room.RoomType
 import scalaomg.common.room.RoomProperty
 import scalaomg.server.core.ServerActor._
 import scalaomg.server.matchmaking.{Matchmaker, MatchmakingHandler}
-import scalaomg.server.room.ServerRoom
-import scalaomg.server.routing_service.RoutingService
+import scalaomg.server.room.{RoomHandlingService, ServerRoom}
+import scalaomg.server.routing.RoutingService
 import akka.pattern.ask
 import akka.util.Timeout
 

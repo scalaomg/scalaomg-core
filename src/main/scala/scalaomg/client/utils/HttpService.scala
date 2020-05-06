@@ -23,10 +23,10 @@ import scala.util.{Failure, Success}
 private[client] sealed trait HttpService extends BasicActor
 
 private[client] object HttpService {
-  def apply(serverUri: String): Props = Props(classOf[HttpClientImpl], serverUri)
+  def apply(serverUri: String): Props = Props(classOf[HttpServiceImpl], serverUri)
 }
 
-private class HttpClientImpl(private val httpServerUri: String) extends HttpService with RoomJsonSupport {
+private class HttpServiceImpl(private val httpServerUri: String) extends HttpService with RoomJsonSupport {
 
   import akka.http.scaladsl.Http
 

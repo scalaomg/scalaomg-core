@@ -12,14 +12,14 @@ trait TestConfig {
   implicit val DefaultDuration: Duration = 5 seconds
   implicit val TimeoutToDuration: Timeout => Duration = timeout => timeout.duration
 
-  val GameServerSpecServerPort = 8080
-  val ClientSpecServerPort = 8081
-  val HttpClientSpecServerPort = 8082
-  val ServerActorSpecPort = 8083
-  val CoreClientSpecServerPort = 8084
-  val SocketHandlerSpecServerPort = 8085
-  val ClientRoomActorSpecServerPort = 8086
-  val ClientRoomSpecServerPort = 8087
-  val MatchmakingSpecServerPort = 8088
-  val ClientMatchmakingSpecServerPort = 8089
+  val GameServerSpecServerPort = 9080
+  val ClientSpecServerPort = 9081
+  val HttpClientSpecServerPort = 9082
+  val ServerActorSpecPort = 9083
+  val CoreClientSpecServerPort = 9084
+  val SocketHandlerSpecServerPort = 9085
+  val ClientRoomActorSpecServerPort = 9086
+  val ClientRoomSpecServerPort = 9087
+  val MatchmakingSpecServerPort = 9088
+  val ClientMatchmakingSpecServerPort = 9089
 }

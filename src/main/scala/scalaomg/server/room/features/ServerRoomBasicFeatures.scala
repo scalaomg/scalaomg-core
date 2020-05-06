@@ -1,4 +1,6 @@
-package scalaomg.server.room
+package scalaomg.server.room.features
+
+import scalaomg.server.room.{Client, ServerRoom}
 
 private[server] trait PrivateRoomSupport {
 
@@ -85,7 +87,6 @@ private[server] trait ReconnectionSupport { self: ServerRoom =>
 
   import scalaomg.common.communication.CommunicationProtocol.ProtocolMessage
   import scalaomg.common.communication.CommunicationProtocol.ProtocolMessageType.{ClientNotAuthorized, JoinOk}
-
   import scalaomg.server.utils.Timer
   // Clients that are allowed to reconnect with the associate expiration timer
   private var reconnectingClients: Seq[(Client, Timer)] = Seq.empty

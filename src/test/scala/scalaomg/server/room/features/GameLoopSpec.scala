@@ -1,11 +1,11 @@
-package scalaomg.server.room
+package scalaomg.server.room.features
 
 import akka.actor.{ActorRef, ActorSystem}
 import org.scalatest.concurrent.Eventually
 import org.scalatest.flatspec.AnyFlatSpecLike
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll}
-import scalaomg.server.core.RoomHandlingService
+import scalaomg.server.room.{RoomActor, RoomHandlingService}
 import test_utils.TestConfig
 
 class GameLoopSpec extends AnyFlatSpecLike

@@ -14,7 +14,7 @@ import scalaomg.common.communication.CommunicationProtocol.ProtocolMessage
 import scalaomg.common.communication.CommunicationProtocol.ProtocolMessageType._
 import scalaomg.common.communication.TextProtocolSerializer
 import scalaomg.server.communication
-import scalaomg.server.core.RoomHandlingService
+import scalaomg.server.room.RoomHandlingService
 import scalaomg.server.room.{RoomActor, ServerRoom}
 
 import scala.concurrent.duration._

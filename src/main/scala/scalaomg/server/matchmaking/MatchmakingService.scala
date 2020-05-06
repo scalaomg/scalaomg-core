@@ -5,7 +5,7 @@ import akka.util.Timeout
 import scalaomg.common.communication.CommunicationProtocol.ProtocolMessageType._
 import scalaomg.common.communication.CommunicationProtocol.{MatchmakingInfo, ProtocolMessage}
 import scalaomg.common.room.Room.RoomType
-import scalaomg.server.core.RoomHandlingService.{CreateRoomWithMatchmaking, RoomCreated, TypeNotDefined}
+import scalaomg.server.room.RoomHandlingService.{CreateRoomWithMatchmaking, RoomCreated, TypeNotDefined}
 import scalaomg.server.matchmaking.Group.GroupId
 import scalaomg.server.matchmaking.MatchmakingService.{JoinQueue, LeaveQueue}
 import scalaomg.server.room.Client

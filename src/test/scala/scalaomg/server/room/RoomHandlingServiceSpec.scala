@@ -1,17 +1,15 @@
-package scalaomg.server.core
+package scalaomg.server.room
 
 import akka.actor.{ActorRef, ActorSystem}
 import akka.testkit.{ImplicitSender, TestKit}
 import com.typesafe.config.ConfigFactory
-import org.scalatest.flatspec.{AnyFlatSpec, AnyFlatSpecLike}
-import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll}
+import org.scalatest.flatspec.AnyFlatSpecLike
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
+import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll}
 import scalaomg.common.room.Room.{RoomId, RoomType}
 import scalaomg.common.room.RoomPropertyValue.Conversions._
 import scalaomg.common.room.{FilterOptions, Room, RoomProperty}
-import scalaomg.server.core.RoomHandlingService._
-import scalaomg.server.room.ServerRoom
+import scalaomg.server.room.RoomHandlingService._
 import test_utils.ExampleRooms.{LockableRoom, RoomWithProperty, RoomWithProperty2}
 import test_utils.TestConfig
 

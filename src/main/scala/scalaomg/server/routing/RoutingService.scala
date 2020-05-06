@@ -1,4 +1,4 @@
-package scalaomg.server.routing_service
+package scalaomg.server.routing
 
 import akka.actor.ActorRef
 import akka.http.scaladsl.model.ws.Message
@@ -9,7 +9,7 @@ import akka.util.Timeout
 import scalaomg.common.http.Routes
 import scalaomg.common.room.Room.{RoomId, RoomType}
 import scalaomg.common.room.{FilterOptions, RoomJsonSupport, RoomProperty, SharedRoom}
-import scalaomg.server.core.RoomHandlingService._
+import scalaomg.server.room.RoomHandlingService._
 import scalaomg.server.matchmaking.{Matchmaker, MatchmakingHandler}
 import scalaomg.server.room.ServerRoom
 

@@ -1,13 +1,12 @@
-package scalaomg.server.core
+package scalaomg.server.room
 
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 import scalaomg.common.communication.BinaryProtocolSerializer
 import scalaomg.common.room.Room.{RoomId, RoomPassword, RoomType}
 import scalaomg.common.room._
 import scalaomg.server.communication.RoomSocket
-import scalaomg.server.core.RoomHandlingService._
 import scalaomg.server.matchmaking.Group.GroupId
-import scalaomg.server.room.{Client, RoomActor, ServerRoom}
+import scalaomg.server.room.RoomHandlingService._
 
 private[server] object RoomHandlingService {
 

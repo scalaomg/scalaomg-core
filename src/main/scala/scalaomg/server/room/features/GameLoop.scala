@@ -1,7 +1,8 @@
-package scalaomg.server.room
+package scalaomg.server.room.features
 
 import scalaomg.common.room.RoomProperty
 import scalaomg.server.room.RoomActor.WorldUpdateTick
+import scalaomg.server.room.{Client, ServerRoom}
 import scalaomg.server.utils.Timer
 
 /**

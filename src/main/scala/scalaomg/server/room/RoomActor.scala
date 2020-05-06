@@ -4,7 +4,8 @@ import akka.actor.{Actor, ActorRef, PoisonPill, Props, Timers}
 import scalaomg.common.communication.CommunicationProtocol.ProtocolMessage
 import scalaomg.common.communication.CommunicationProtocol.ProtocolMessageType._
 import scalaomg.common.room.Room.RoomPassword
-import scalaomg.server.core.RoomHandlingService.RemoveRoom
+import scalaomg.server.room.RoomHandlingService.RemoveRoom
+import scalaomg.server.room.features.GameLoop
 
 import scala.concurrent.ExecutionContextExecutor
 

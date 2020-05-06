@@ -1,4 +1,4 @@
-package scalaomg.server.routes
+package scalaomg.server.routing
 
 import akka.http.scaladsl.model.HttpRequest
 import scalaomg.common.http.{HttpRequests, Routes}

@@ -13,8 +13,8 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll}
 import scalaomg.common.room.Room
-import scalaomg.server.core.RoomHandlingService
-import scalaomg.server.core.RoomHandlingService.{DefineRoomType, GetMatchmakingRooms}
+import scalaomg.server.room.RoomHandlingService
+import scalaomg.server.room.RoomHandlingService.{DefineRoomType, GetMatchmakingRooms}
 import scalaomg.server.matchmaking.MatchmakingService.{JoinQueue, LeaveQueue}
 import scalaomg.server.utils.TestClient
 import test_utils.ExampleRooms._

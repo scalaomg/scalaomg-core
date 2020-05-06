@@ -11,7 +11,6 @@ import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll}
 import scalaomg.common.communication.CommunicationProtocol.ProtocolMessage
 import scalaomg.common.communication.CommunicationProtocol.ProtocolMessageType._
 import scalaomg.common.room.Room
-import scalaomg.server.core.RoomHandlingService
 import scalaomg.server.room.RoomActor._
 
 import scala.concurrent.duration._
