@@ -26,30 +26,3 @@ libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.2.3",
   "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % Test,
   "com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion % Test)
-
-// Maven
-organization := "com.github.scalaomg"
-homepage := Some(url("https://github.com/scalaomg"))
-description := "A Scala library that simplifies client-server videogames development"
-developers := List(
-  Developer("gabri-16", "Gabriele Guerrini", "", url = url("https://github.com/gabri-16")),
-  Developer("StefanoSalvatori", "Stefano Salvatori", "", url = url("https://github.com/StefanoSalvatori")),
-  Developer("RiccardoSalvatori", "Riccardo Salvatori", "", url = url("https://github.com/RiccardoSalvatori")),
-)
-scmInfo := Some(
-  ScmInfo(
-    url("https://github.com/scalaomg/scalaomg-core"),
-    "scm:git@github.com:scalaomg/scalaomg.core.git"
-  )
-)
-licenses := Seq(("MIT License", url("http://www.opensource.org//licenses//mit-license.php")))
-
-crossPaths := false // It avoids on appending Scala language version to the artifact name
-publishArtifact in Test := false
-coverageEnabled := false
-pomIncludeRepository := { _ => false }
-publishMavenStyle := true
-
-publishTo := Some(
-  if (isSnapshot.value) Opts.resolver.sonatypeSnapshots else Opts.resolver.sonatypeStaging
-)
