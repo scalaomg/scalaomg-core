@@ -43,6 +43,13 @@ The developer will be provided with high-level support that is game logic indepe
 - Communication and synchronization with the gameserver
 
 ## Usage
+### Import
+If you are using sbt add the following line to your build.sbt file
+```scala
+libraryDependencies += "com.github.scalaomg" % "scala-omg" % "latest"
+```
+For other build tools check: https://mvnrepository.com/artifact/com.github.scalaomg/scala-omg/latest 
+
 ### GameServer Creation
 To start and terminate a gameserver you can use the ```GameServer``` class:
 
@@ -183,5 +190,6 @@ object ChatRoomClient extends App {
   }
 }
   ```
-
+## Deployment
+Since this library is based on akka-core and akka-http, reference.conf files must be merged when building fat jars. In order to do so you can use the sbt-assembly plugin https://github.com/sbt/sbt-assembly or follow the akka official guide at https://doc.akka.io/docs/akka/current/additional/packaging.html.
 
