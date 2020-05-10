@@ -4,6 +4,7 @@ A Scala library for online multiplayer games
 [![Build Status](https://travis-ci.org/scalaomg/scalaomg-core.svg?branch=master)](https://travis-ci.org/scalaomg/scalaomg-core)
 [![License](http://img.shields.io/badge/License-MIT-blue.svg)](https://mit-license.org/)
 [![codecov](https://codecov.io/gh/scalaomg/scalaomg-core/branch/master/graph/badge.svg)](https://codecov.io/gh/scalaomg/scalaomg-core)
+[![version](https://img.shields.io/badge/version-1.0.1-f39f37)](https://img.shields.io/badge/version-1.0.1-f39f37)
 
 ## Description
 
